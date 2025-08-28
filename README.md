@@ -10,7 +10,7 @@ Key inspirations:
 - **Knot Theory**: Braids represent data flows; crossings apply parametric rotations for invertible mixing.
 - **Neuroscience Parallel**: Sub-braids and integrations model segregated neural pathways that entangle, reflecting "knotty" brain dynamics as discussed in papers like "Unusual Mathematical Approaches Untangle Nervous Dynamics."
 
-The model achieves ~90% accuracy on classification and low MSE on volume regression in tests.
+The model achieves ~94.5% accuracy on classification and low MSE on volume regression in tests.
 
 ## New: Benchmarking Suite
 
