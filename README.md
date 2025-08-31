@@ -59,14 +59,14 @@ Note: Results are illustrative based on typical runs on the synthetic dataset.
 
 
 
-##KnotHyperTransformer Stride Analysis
+## KnotHyperTransformer Stride Analysis
 An experiment was conducted to analyze the effect of the stride hyperparameter in the KnotHyperTransformer. The stride determines how many crossings are grouped into a single hyperedge. We tested strides from 1 to 5.
 
 The analysis shows how increasing the stride length impacts both validation loss and training time, revealing a trade-off between computational efficiency and model performance.
 
 This plot is generated automatically by running the benchmark script.
 
-##How to Run
+## How to Run
 Ensure you have PyTorch and Matplotlib installed.
 
 Run the benchmark script from your terminal:
@@ -75,7 +75,7 @@ python knot_benchmark.py
 
 The script will print the benchmark results to the console and display the performance plot for the stride analysis.
 
-##Future Work
+## Future Work
 [ ] Integrate a reinforcement learning environment for knot simplification tasks.
 
 [ ] Expand the dataset with real knot data from established censuses.
