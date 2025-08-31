@@ -1,7 +1,7 @@
-#KnotNet
+# KnotNet
 An exploration of deep learning models for knot theory, leveraging PyTorch to implement and benchmark novel architectures against established baselines. This project aims to discover efficient and powerful models for predicting knot invariants from braid representations.
 
-##Models
+## Models
 The following models have been implemented and benchmarked. Each is designed with a multilayer structure to enable deeper feature extraction.
 
 1. KnotNet v2 (Multilayer Recurrent)
@@ -13,13 +13,13 @@ A standard Transformer Encoder architecture adapted for braid sequences. This mo
 3. KnotHyperTransformer (Multilayer)
 A novel architecture that integrates knot theory concepts with a hypergraph-inspired attention mechanism. It represents strands as nodes and groups of crossings as hyperedges, using bipartite attention to model their interactions. This approach aims to capture higher-order structures within the braid more effectively.
 
-##Benchmarking and Analysis
+## Benchmarking and Analysis
 The models were benchmarked on a synthetically generated dataset of braids. The primary goal was to compare their performance in terms of training speed, final validation loss, and memory efficiency.
 
-##Multilayer Model Comparison
+## Multilayer Model Comparison
 The three architectures were configured with an equal number of layers (NUM_LAYERS = 4) to ensure a fair comparison of their underlying designs. The results highlighted the trade-offs between sequential and parallel processing.
 
-##Model
+## Model
 
 Avg. Train Time (s)
 
@@ -27,7 +27,7 @@ Final Val Loss
 
 Max Memory (MB)
 
-##KnotNet v2 (Recurrent)
+## KnotNet v2 (Recurrent)
 
 ~10.52
 
@@ -35,7 +35,7 @@ Max Memory (MB)
 
 ~19.50
 
-##TransformerKnotNet
+## TransformerKnotNet
 
 ~0.45
 
@@ -43,7 +43,7 @@ Max Memory (MB)
 
 ~52.10
 
-##KnotHyperTransformer
+## KnotHyperTransformer
 
 ~0.70
 
