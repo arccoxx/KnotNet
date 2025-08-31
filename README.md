@@ -1,248 +1,83 @@
-# KnotNet: A Knot Theory-Inspired Neural Network
+#KnotNet
+An exploration of deep learning models for knot theory, leveraging PyTorch to implement and benchmark novel architectures against established baselines. This project aims to discover efficient and powerful models for predicting knot invariants from braid representations.
 
-## Overview
+##Models
+The following models have been implemented and benchmarked. Each is designed with a multilayer structure to enable deeper feature extraction.
 
-KnotNet is an innovative machine learning model that draws inspiration from knot theory in topology and parallels between neural wirings in the brain and knot complexities. It treats input data as braid sequences (from braid groups), using trainable rotation matrices to "entangle" features across virtual strands, mimicking how neurons form tangled, adaptive connections. The model learns to predict knot invariants, such as whether a knot is hyperbolic (binary classification) and its hyperbolic volume (regression), when braids are closed into knots.
+1. KnotNet v2 (Multilayer Recurrent)
+This model serves as the baseline, inspired by the original KnotNet v2 architecture. It processes braid words sequentially using a custom recurrent mechanism based on unitary transformations. The multilayer version stacks these recurrent operations to increase its representational capacity.
 
-This project evolved through iterative improvements, with the latest version (v4) featuring specialized sub-braids for local processing, gating for dynamic control, and multi-task learning. It's implemented in PyTorch and tested on both synthetic braid datasets and real knot data from the SnapPy library.
+2. TransformerKnotNet (Multilayer)
+A standard Transformer Encoder architecture adapted for braid sequences. This model processes the entire braid in parallel, leveraging self-attention to capture relationships between all crossings simultaneously. It provides a strong baseline for parallel processing efficiency.
 
-Key inspirations:
-- **Knot Theory**: Braids represent data flows; crossings apply parametric rotations for invertible mixing.
-- **Neuroscience Parallel**: Sub-braids and integrations model segregated neural pathways that entangle, reflecting "knotty" brain dynamics as discussed in papers like "Unusual Mathematical Approaches Untangle Nervous Dynamics."
+3. KnotHyperTransformer (Multilayer)
+A novel architecture that integrates knot theory concepts with a hypergraph-inspired attention mechanism. It represents strands as nodes and groups of crossings as hyperedges, using bipartite attention to model their interactions. This approach aims to capture higher-order structures within the braid more effectively.
 
-The model achieves ~94.5% accuracy on classification and low MSE on volume regression in tests.
+##Benchmarking and Analysis
+The models were benchmarked on a synthetically generated dataset of braids. The primary goal was to compare their performance in terms of training speed, final validation loss, and memory efficiency.
 
-## New: Benchmarking Suite
+##Multilayer Model Comparison
+The three architectures were configured with an equal number of layers (NUM_LAYERS = 4) to ensure a fair comparison of their underlying designs. The results highlighted the trade-offs between sequential and parallel processing.
 
-The repository now includes a comprehensive benchmarking suite that evaluates KnotNet's performance with real knot data from SnapPy's mathematical knot tables. The suite provides detailed metrics on:
-- Training efficiency across different batch sizes
-- Inference throughput and latency
-- Performance degradation with knot complexity
-- Accuracy on real vs synthetic knots
+##Model
 
-## Requirements
+Avg. Train Time (s)
 
-- Python 3.9+ (tested on 3.12)
-- PyTorch (for model implementation and training)
-- SnapPy (for generating knot data via `snappy` module)
-- Other libraries: `torch`, `random`, `math`, `numpy`, `json`, `time`
+Final Val Loss
 
-## Installation
+Max Memory (MB)
 
-1. **Set up Python Environment**:
-   - Install Python 3.9+ from [python.org](https://www.python.org).
-   - (Recommended) Create a virtual environment:
-     ```bash
-     python -m venv knotnet_env
-     source knotnet_env/bin/activate  # On Linux/macOS
-     # Or on Windows: knotnet_env\Scripts\activate
-     ```
+##KnotNet v2 (Recurrent)
 
-2. **Install Dependencies**:
-   - Install PyTorch (GPU support optional; see [pytorch.org](https://pytorch.org/get-started/locally/) for platform-specific commands):
-     ```bash
-     pip install torch torchvision torchaudio  # CPU version
-     # Or for CUDA: pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-     ```
-   - Install SnapPy (knot theory library):
-     ```bash
-     pip install snappy snappy_15_knots  # Includes larger knot census
-     ```
-     - **Important**: Make sure you're installing the topology library `snappy`, not the compression library `python-snappy`
-     - **For Conda users**: `conda install -c conda-forge snappy`
-     - If you encounter issues, see the Troubleshooting section below
+~10.52
 
-3. **Verify Installation**:
-   ```bash
-   python -c "import torch; import snappy; print('Installed successfully')"
-   python test_snappy_fixed.py  # Test SnapPy installation
-   ```
+0.541
 
-## Usage
+~19.50
 
-### Basic Training
+##TransformerKnotNet
 
-The basic script generates a synthetic dataset, trains KnotNet, and evaluates it:
+~0.45
 
-```bash
-python knotnet.py
-```
+0.518
 
-This will:
-- Generate 3000 random 4-strand braids (length 5-50)
-- Compute labels and volumes using SnapPy
-- Train the model with AdamW optimizer
-- Save the best model as `best_model.pt`
-- Print test accuracy and volume MSE
+~52.10
 
-### Benchmarking Suite
+##KnotHyperTransformer
 
-For comprehensive performance evaluation with real knot data:
+~0.70
 
-#### 1. Quick Benchmark with Real Knots
-```bash
-python benchmark_knotnet_fixed.py
-```
+0.511
 
-This script:
-- Loads real knots from SnapPy's tables (trefoil 3_1, figure-eight 4_1, etc.)
-- Uses actual hyperbolic volumes calculated by SnapPy
-- Trains and evaluates on mixed real/synthetic data
-- Outputs metrics to `benchmark_results.json`
+~65.30
 
-#### 2. Full Benchmarking Analysis
-```bash
-python benchmark_knotnet.py
-```
+Note: Results are illustrative based on typical runs on the synthetic dataset.
 
-Provides detailed analysis including:
-- **Training benchmarks**: Tests different batch sizes, measures epoch times
-- **Inference benchmarks**: Throughput (samples/sec), latency measurements
-- **Complexity analysis**: Performance by knot crossing number
-- **Detailed reports**: JSON and Markdown format outputs
 
-#### 3. Alternative: Real Braid Representations
-```bash
-python benchmark_real_braids.py
-```
 
-Uses known braid representations of famous knots:
-- Works even without SnapPy installation
-- Includes 23 real knot braids (unknot to 10-crossing knots)
-- Generates synthetic variations
-- Provides full performance metrics
 
-### Output Files
 
-After running benchmarks, you'll find:
-- `best_model.pt`: Trained model weights
-- `benchmark_results.json`: Detailed performance metrics
-- `benchmark_report.md`: Human-readable report (if using full suite)
 
-### Sample Results
 
-```
-Test Accuracy: 0.9156
-Volume MSE: 0.0823
-Throughput: 487.32 samples/sec
-Latency: 8.43 ms/batch
+##KnotHyperTransformer Stride Analysis
+An experiment was conducted to analyze the effect of the stride hyperparameter in the KnotHyperTransformer. The stride determines how many crossings are grouped into a single hyperedge. We tested strides from 1 to 5.
 
-Performance by Complexity:
-  Simple (≤10 crossings): 0.9673
-  Medium (11-20 crossings): 0.8934
-  Complex (21-35 crossings): 0.8539
-```
+The analysis shows how increasing the stride length impacts both validation loss and training time, revealing a trade-off between computational efficiency and model performance.
 
-## Testing on Custom Data
+This plot is generated automatically by running the benchmark script.
 
-To test on your own braid data:
+##How to Run
+Ensure you have PyTorch and Matplotlib installed.
 
-```python
-import torch
-import snappy
-from knotnet import KnotNet
+Run the benchmark script from your terminal:
 
-# Load trained model
-model = KnotNet()
-model.load_state_dict(torch.load('best_model.pt'))
-model.eval()
+python knot_benchmark.py
 
-# Prepare your braids
-custom_braids = [[1, -2, 3], [1, 1, 1], ...]  # Your braid words
+The script will print the benchmark results to the console and display the performance plot for the stride analysis.
 
-# Convert to tensor
-braids_tensor = torch.tensor(custom_braids)
+##Future Work
+[ ] Integrate a reinforcement learning environment for knot simplification tasks.
 
-# Inference
-with torch.no_grad():
-    class_out, vol_out = model(braids_tensor)
-    predictions = (class_out > 0.5).float()
-    
-print(f"Hyperbolic predictions: {predictions}")
-print(f"Volume predictions: {vol_out}")
-```
+[ ] Expand the dataset with real knot data from established censuses.
 
-## Troubleshooting
-
-### SnapPy Installation Issues
-
-If you get `module 'snappy' has no attribute 'Manifold'`:
-1. You likely have `python-snappy` (compression) installed instead
-2. Fix:
-   ```bash
-   pip uninstall python-snappy snappy
-   pip install snappy-manifolds
-   # Or: conda install -c conda-forge snappy
-   ```
-3. Verify with: `python test_snappy_fixed.py`
-
-### Performance Optimization
-
-- **GPU Usage**: The model automatically uses CUDA if available
-- **Batch Size**: Larger batches improve throughput but may reduce accuracy
-- **Mixed Precision**: Enable with `torch.amp` for faster training on modern GPUs
-
-## Extending the Code
-
-### For Different Knot Invariants
-Modify to predict other properties like crossing number or Jones polynomial:
-```python
-# In data generation:
-crossing_num = link.crossing_number()
-
-# Modify model output:
-self.mlp = nn.Sequential(
-    ...,
-    nn.Linear(64, 3)  # Add dimension for new invariant
-)
-```
-
-### For Larger Braids
-Increase strand count:
-```python
-model = KnotNet(num_strands=8, hidden_dim=128)
-```
-
-### Real-World Applications
-
-1. **Molecular Biology**: Model DNA/protein knots
-2. **Materials Science**: Analyze polymer entanglements  
-3. **Neuroscience**: Study neural pathway topology
-4. **Network Analysis**: Topological data analysis
-
-See the original README sections for detailed extension instructions.
-
-## Benchmarking Metrics Explained
-
-- **Throughput**: Knots processed per second (higher is better)
-- **Latency**: Time to process one batch in milliseconds (lower is better)
-- **Volume MSE**: Mean squared error for volume regression (lower is better)
-- **Complexity Scaling**: How accuracy degrades with increasing knot complexity
-
-## Contributing
-
-Contributions are welcome! Areas for improvement:
-- Additional knot invariants
-- Alternative neural architectures
-- Real-world dataset integration
-- Performance optimizations
-
-## Citation
-
-If you use KnotNet in your research, please cite:
-```bibtex
-@software{knotnet2024,
-  title={KnotNet: A Knot Theory-Inspired Neural Network},
-  author={[Your Name]},
-  year={2024},
-  url={https://github.com/arccoxx/KnotNet}
-}
-```
-
-## License
-
-MIT License (see LICENSE file for details)
-
-## Acknowledgments
-
-Inspired by knot theory, neuroscience topology papers, and the PyTorch/SnapPy communities. Special thanks to the SnapPy developers for providing comprehensive knot data access.
+[ ] Explore more sophisticated hypergraph representations.
